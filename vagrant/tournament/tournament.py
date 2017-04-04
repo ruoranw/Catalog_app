@@ -39,6 +39,7 @@ def countPlayers():
     conn.close()
     return result
 
+
 def registerPlayer(name):
     """Adds a player to the tournament database.
 
@@ -50,15 +51,16 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO players (name) VALUES (%s)",(name,))
+    c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
     conn.commit()
     conn.close()
+
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
 
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
+    The first entry in the list should be the player in first place, or a
+    player tied for first place if there is currently a tie.
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
@@ -69,10 +71,11 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT * FROM complete;")
+    c.execute("SELECT * FROM standings;")
     results = c.fetchall()
     conn.commit()
     conn.close()
+    print results
     return results
 
 
@@ -85,7 +88,8 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)",(winner,loser))
+    c.execute("INSERT INTO matches (winner,loser) VALUES (%s,%s)",
+             (winner, loser))
     conn.commit()
     conn.close()
 
@@ -106,4 +110,27 @@ def swissPairings():
         name2: the second player's name
     """
 
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT id, name FROM standings;")
+    standings = c.fetchall()
+    conn.commit()
+    c.execute("SELECT id, name FROM random;")
+    random = c.fetchall()
+    c.execute("SELECT COUNT(*) FROM matches;")
+    match_number = c.fetchall()
+    conn.commit()
 
+    pairings = []
+    player_number = countPlayers()
+
+    if match_number == 0:
+        for i in range(0, player_number-1, 2):
+            pairings.append(random[i]+random[i+1])
+    else:
+        for i in range(0, player_number-1, 2):
+            pairings.append(standings[i]+standings[i+1])
+
+    conn.close()
+    print pairings
+    return pairings

@@ -17,32 +17,19 @@ CREATE TABLE matches(match_id serial PRIMARY KEY,
                      loser integer REFERENCES players(id));
 
 
-CREATE VIEW complete AS SELECT players.id, players.name,
-                     COUNT (matches.winner) as wins,
-                     COUNT (matches.loser) + COUNT(matches.loser) as total_m
-                     FROM players LEFT JOIN matches ON id = winner AND id = loser
-                     GROUP BY players.id
-                     ORDER BY wins DESC;
+CREATE VIEW standings AS SELECT players.id, players.name,
+                      SUM(CASE WHEN players.id = matches.winner THEN 1 ELSE 0 END) AS wins,
+                      COUNT(matches) as total_m
+                      FROM players LEFT JOIN matches
+                      ON players.id = matches.winner OR players.id = matches.loser
+                      GROUP BY players.id
+                      ORDER BY wins DESC,
+                               total_m ASC;
 
 
-CREATE OR REPLACE FUNCTION updated_complete()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-AS $BODY$
-  BEGIN
-      IF TG_OP = 'UPDATE' THEN
-          UPDATE complete SET wins = wins+1, total_m = total_m+1 WHERE id = NEW.id;
-          UPDATE complete SET loses = loses+1, total_m = total_m+1 WHERE id = NEW.id;
-          RETURN NEW;
-      END IF;
-      RETURN NEW;
-  END;
-  $BODY$;
-
-CREATE TRIGGER updated_complete_trig
-    INSTEAD OF UPDATE
-    ON complete FOR EACH ROW EXECUTE PROCEDURE updated_complete();
-
+CREATE VIEW random AS SELECT *
+                   FROM players
+                   ORDER BY random();
 
 
 
