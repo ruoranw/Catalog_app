@@ -7,14 +7,17 @@
 -- these lines here.
 DROP DATABASE IF EXISTS tournament；
 
+CREATE DATABASE tournament；
+\c tournament
 
 CREATE TABLE players(id serial PRIMARY KEY,
                      name text);
 
 
 CREATE TABLE matches(match_id serial PRIMARY KEY,
-                     winner integer REFERENCES players(id),
-                     loser integer REFERENCES players(id));
+                     winner INT REFERENCES players(id) ON DELETE CASCADE,
+                     loser INT REFERENCES players(id) ON DELETE CASCADE
+                     CHECK (winner <> loser));
 
 
 CREATE VIEW standings AS SELECT players.id, players.name,
