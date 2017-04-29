@@ -1,0 +1,14 @@
+<html>
+<body>
+<h1> Edit {{restaurant.name}}</h1>
+
+<form action = "url_for('editRestaurant',restaurant_id = restaurant.id)" method='POST'>
+<p>Name</p>
+<input type="text" name="name" value="{{restaurant.name}}">
+
+<button type="submit">Edit</button>
+<a href="url_for('editRestaurant', restaurant_id=restaurant_id)">Cancel</a>
+
+</form>
+</body>
+</html>

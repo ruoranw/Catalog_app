@@ -1,0 +1,14 @@
+<html>
+<body>
+<h1> Restaurants</h1>
+
+<form action = "url_for('showRestaurants',restaurants = restaurants)" method='GET'>
+
+{% for r in restaurants %}
+    {{r.name}}
+    <br>
+{% endfor%}
+
+</form>
+</body>
+</html>
