@@ -1,13 +1,20 @@
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
+</head>
 <body>
 <h1> Edit {{restaurant.name}}</h1>
 
-<form action = "url_for('editRestaurant',restaurant_id = restaurant.id)" method='POST'>
-<p>Name</p>
-<input type="text" name="name" value="{{restaurant.name}}">
+<form action = "{{url_for('editRestaurant',restaurant_id = restaurant.id)}}" method="post">
 
-<button type="submit">Edit</button>
-<a href="url_for('editRestaurant', restaurant_id=restaurant_id)">Cancel</a>
+<p>Name:</p>
+
+<input type="text" name="name" value="{{restaurant.name}}"></input>
+<br>
+
+<button type="submit" value="Edit">Edit</button>
+
+<a href="{{url_for('showRestaurants')}}">Cancel</a>
 
 </form>
 </body>
