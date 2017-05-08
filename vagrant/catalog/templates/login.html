@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//apis.google.com/js/client:platform.js?onload=start" async defer></script>
 </head>
 <body>
 <div id="signinButton">
     <span class="g-signin"
-        data-scope="openid"
+        data-scope="openid email"
         data-clientid="549641652344-k0bgpp5k1t2l1uv9l4l5qimb0h3bs40v.apps.googleusercontent.com"
         data-redirecturi="postmessage"
         data-accesstype="offline"
@@ -48,5 +49,6 @@ function signInCallback(authResult) {
 
   }); } }
 </script>
+
 </body>
 </html>
