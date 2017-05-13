@@ -10,6 +10,7 @@
     <a href="{{url_for('disconnect')}}">Disconnect</a>
     {% endif %}
 
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
@@ -23,9 +24,6 @@
 
 <form action = "url_for('showRestaurants')" method='GET'>
 <br>
-
-<a href="{{url_for('newRestaurant')}}">Add New Restaurant</a>
-<br><br>
 {% for r in restaurants %}
     {{r.name}}
     <br>
