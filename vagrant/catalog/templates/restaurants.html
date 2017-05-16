@@ -4,11 +4,14 @@
 </head>
 <body>
 <h1> Restaurants</h1>
+
+    <div>
     {%if 'username' not in session%}
     <a href="{{url_for('showLogin')}}">Click here to login</a>
     {% else %}
     <a href="{{url_for('disconnect')}}">Disconnect</a>
     {% endif %}
+     </div>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
