@@ -46,6 +46,7 @@ def gconnect():
         response = make_response(json.dumps('Invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
+
     code = request.data
 
     try:
@@ -63,6 +64,7 @@ def gconnect():
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     print result
+
   # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
@@ -113,6 +115,7 @@ def gconnect():
     data = json.loads(answer.text)
     print data
 
+
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
@@ -127,12 +130,12 @@ def gconnect():
 
     output = ''
     output += '<h1>Welcome, '
-    output += login_session['username']
+    output += login_session['email']
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("You are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['email'])
     print "done!"
     return output
 
@@ -174,6 +177,7 @@ def fbconnect():
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
+
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
@@ -473,9 +477,9 @@ def deleteMenuItem(restaurant_id, menu_id):
 def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] =='google':
-            gdisconnect()
-            del login_session['gplus_id']
-            del login_session['credentials']
+            gdisconnct()
+            # del login_session['gplus_id']
+            # del login_session['access_token']
         if login_session['provider'] == 'facebook':
             fbdisconnect()
             del login_session['facebook_id']
@@ -483,7 +487,6 @@ def disconnect():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        del login_session['user_id']
         del login_session['provider']
         flash("You have successfully been logged out.")
         return redirect(url_for('showRestaurants'))
