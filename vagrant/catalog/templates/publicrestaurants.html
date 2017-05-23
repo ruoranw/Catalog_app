@@ -1,36 +1,45 @@
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
-</head>
-<body>
-<h1> Restaurants</h1>
-    {%if 'username' not in session%}
-    <a href="{{url_for('showLogin')}}">Click here to login</a>
-    {% else %}
-    <a href="{{url_for('disconnect')}}">Disconnect</a>
-    {% endif %}
+<!-- This page would be showed up if the user is not logged in. -->
+{% extends "main.html" %}
+{% block content %}
 
+    <br>
+    <!-- Add a login if user is not logged in and a disconnect if the user is logged in  -->
+    <div class="row">
+        <div class="text-right">
+        {%if 'username' not in session%}
+        <a href="{{url_for('showLogin')}}">Click here to login</a>
+        {% else %}
+        <a href="{{url_for('disconnect')}}">Disconnect</a>
+        {% endif %}
+        </div>
+    </div>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
+    <div class="row">
+
+    <div class="text-center"><h1> Restaurants</h1></div>
+
+    </div>
+    <hr>
+    <!-- Below code iterates restaurant names -->
+    <form action = "url_for('showRestaurants')" method='GET' class="text-center">
+    <br>
+    <br>
+    {% for r in restaurants %}
+        {{r.name}}
+        <br>
+    {% endfor%}
+    </form>
+
+    <div class="row" class="text-center">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="text-center">
         {% for message in messages %}
-        <li><strong> {{ message }} </strong></li>
+         <li><strong> {{ message }} </strong></li>
         {% endfor %}
         </ul>
-      {% endif %}
-    {% endwith %}
+        {% endif %}
+        {% endwith %}
+   </div>
 
-
-<form action = "url_for('showRestaurants')" method='GET'>
-<br>
-{% for r in restaurants %}
-    {{r.name}}
-    <br>
-{% endfor%}
-
-
-</form>
-
-</body>
-</html>
+{% endblock %}

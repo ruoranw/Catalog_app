@@ -130,12 +130,12 @@ def gconnect():
 
     output = ''
     output += '<h1>Welcome, '
-    output += login_session['email']
+    output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("You are now logged in as %s" % login_session['email'])
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
@@ -177,7 +177,6 @@ def fbconnect():
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
-
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
@@ -218,11 +217,10 @@ def fbdisconnect():
     url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
-    # del login_session['username']
-    # del login_session['email']
-    # del login_session['picture']
-    # del login_session['user_id']
-    # del login_session['facebook_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
+    del login_session['facebook_id']
     return "You have been logged out."
 
 # This function create a new user by extracting information of
@@ -400,10 +398,14 @@ def showMenu(restaurant_id):
 # Make a new menu
 def newMenuItem(restaurant_id):
 
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+
     if 'username' not in login_session:
         return redirect('/login')
 
-    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    if restaurant.user_id != login_session['user_id']:
+        return "<script> function myFunction() {alert('You are not authorized to add a new menu. Please create your own restaurant in order to add menus.');}</script><body onload='myFunction()'>"
+
     if request.method == 'POST':
         newItem = MenuItem(name = request.form['name'],description = request.form['description'], price = request.form['price'], course = request.form['course'], restaurant_id = restaurant_id, user_id=restaurant.user_id)
         session.add(newItem)
@@ -482,13 +484,13 @@ def disconnect():
             # del login_session['access_token']
         if login_session['provider'] == 'facebook':
             fbdisconnect()
-            del login_session['facebook_id']
+            # del login_session['facebook_id']
 
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
+        # del login_session['username']
+        # del login_session['email']
+        # del login_session['picture']
         del login_session['provider']
-        flash("You have successfully been logged out.")
+        flash("You have been successfully logged out.")
         return redirect(url_for('showRestaurants'))
     else:
         flash("You were not logged in.")

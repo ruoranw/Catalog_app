@@ -1,11 +1,21 @@
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
-</head>
-<body>
+{% extends "main.html" %}
+{% block content %}
+<br>
+<div class="row">
+        <div class="text-right">
+        {%if 'username' not in session%}
+        <a href="{{url_for('showLogin')}}">Click here to login</a>
+        {% else %}
+        <a href="{{url_for('disconnect')}}">Disconnect</a>
+        {% endif %}
+        </div>
+    </div>
+<div class="row">
+<h1 class="text-center"> {{restaurant.name}} </h1>
+</div>
+<hr>
 
-<h1> {{restaurant.name}} </h1>
-
+<div class="text-center">
     {% with messages = get_flashed_messages()%}
       {% if messages %}
         <ul>
@@ -15,10 +25,14 @@
         </ul>
       {% endif %}
     {% endwith %}
+</div>
 
+<div class="text-center">
 <form action = "{{url_for('showMenu', restaurant_id = restaurant_id)}}" method='GET'>
 
-<p>Menu</p>
+<h3>Menu</h3>
+<br>
+
 
 {% for m in menus %}
 
@@ -26,12 +40,13 @@
     <p> {{m.price}} </p>
     <p> {{m.description}} </p>
     <p> {{m.course}}</p>
+<br>
 
 {%endfor%}
 
-<br>
-
 
 </form>
-</body>
-</html>
+</div>
+{% endblock %}
+
+

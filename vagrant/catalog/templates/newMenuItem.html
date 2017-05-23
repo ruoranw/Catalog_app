@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
-</head>
+{% extends "main.html" %}
+{% block content %}
 
-<body>
+<br>
+<div class="text-center">
 <h1>New Menu Item</h1>
-
-
+</div>
+<div class="text-center">
 <form action="{{ url_for('newMenuItem', restaurant_id=restaurant_id)}}" method='post'>
 
     <p>Name:</p>
@@ -25,14 +23,15 @@
       <input type="text" name="course"> </input>
 
     <br>
+    <br>
     <input type="submit" value="Create">
 
     <br>
-
+    <br>
     <a href="{{url_for('showMenu', restaurant_id=restaurant_id)}}">Cancel</a>
 
 </form>
+</div>
 
+{% endblock %}
 
-</body>
-</html>

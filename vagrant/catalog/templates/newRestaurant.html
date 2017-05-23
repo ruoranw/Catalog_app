@@ -1,16 +1,19 @@
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
-</head>
-<body>
+{% extends "main.html" %}
+{% block content %}
+<br>
+<br>
+<div class="text-center">
 <h1> Make A New Restaurants</h1>
+</div>
 
+<div class="text-center">
 <form action = "#" method='POST'>
-<p>Name</p>
+<h3>Name</h3>
 <input type="text" name="name">
 
 <button type="submit">Create</button>
 
 </form>
-</body>
-</html>
+</div>
+
+{% endblock %}
