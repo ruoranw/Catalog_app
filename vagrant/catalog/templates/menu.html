@@ -20,11 +20,8 @@
 
 <div class="text-center">
 <form action = "{{url_for('showMenu', restaurant_id = restaurant_id)}}" method='GET'>
-
 <p>Menu</p>
-
 {% for m in menus %}
-
     <p> {{m.name}} </p>
     <p> {{m.price}} </p>
     <p> {{m.description}} </p>
@@ -34,9 +31,7 @@
     <a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, menu_id=m.id)}}">Delete</a>
     <br>
     <br>
-
 {%endfor%}
-
 <br>
 </form>
 </div>

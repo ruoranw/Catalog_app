@@ -1,33 +1,32 @@
 <!-- This page with a creating new restaurants area would be showed up if the user is logged in. -->
 {% extends "main.html" %}
 {% block content %}
-    <br>
-    <div class="row">
-        <div class="text-right">
-        {%if 'username' not in session%}
-        <a href="{{url_for('showLogin')}}">Click here to login</a>
-        {% else %}
-        <a href="{{url_for('disconnect')}}">Disconnect</a>
-        {% endif %}
-        </div>
-    </div>
 
-    <div class="row" class="text-center">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-        {% for message in messages %}
-         <li><strong> {{ message }} </strong></li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-   </div>
+<br>
+<div class="row">
+    <div class="text-right">
+    {%if 'username' not in session%}
+    <a href="{{url_for('showLogin')}}">Click here to login</a>
+    {% else %}
+    <a href="{{url_for('disconnect')}}">Disconnect</a>
+    {% endif %}
+    </div>
+</div>
+
+<div class="text-center">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+     <li><strong> {{ message }} </strong></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
 
 <div class="row">
-
     <div class="text-center"><h1> Restaurants</h1></div>
-
     </div>
 
 <form action = "url_for('showRestaurants')" method='GET' class="text-center">
@@ -36,8 +35,8 @@
     {{r.name}}
     <br>
 {% endfor%}
-
 <br>
 <a href="{{url_for('newRestaurant')}}">Add New Restaurant</a>
 </form>
+
 {% endblock %}
