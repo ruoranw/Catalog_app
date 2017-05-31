@@ -25,18 +25,19 @@
     {% endwith %}
 </div>
 
-<div class="row">
-    <div class="text-center"><h1> Restaurants</h1></div>
+<div class="text-center">
+    <div><h1> Restaurants </h1></div>
+    <p> *Click on each restaurant to see its menu</p>
     </div>
 
 <form action = "url_for('showRestaurants')" method='GET' class="text-center">
 <br><br>
 {% for r in restaurants %}
-    {{r.name}}
+    <a href="/restaurants/{{r.id}}/">{{r.name}}</a>
     <br>
 {% endfor%}
 <br>
-<a href="{{url_for('newRestaurant')}}">Add New Restaurant</a>
+<h3><a href="{{url_for('newRestaurant')}}">Add New Restaurant</a></h3>
 </form>
 
 {% endblock %}

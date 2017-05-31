@@ -1,8 +1,15 @@
 {% extends "main.html" %}
 {% block content %}
 
-<div class="row">
-<h1 class="text-center"> {{restaurant.name}} </h1>
+<div class="text-center">
+<h1>{{restaurant.name}}</h1>
+<a href="{{url_for('editRestaurant', restaurant_id=restaurant_id)}}">Edit</a>
+<a href="{{url_for('deleteRestaurant', restaurant_id=restaurant_id)}}">Delete</a>
+</div>
+<div class="text-right">
+    <a href="{{url_for('disconnect')}}">Disconnect</a>
+    <br>
+    <a href="{{url_for('showRestaurants')}}">Back to restaurants</a>
 </div>
 <hr>
 
@@ -29,6 +36,8 @@
     <a href="{{url_for('editMenuItem', restaurant_id=restaurant.id, menu_id=m.id)}}">Edit</a>
     <br>
     <a href="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, menu_id=m.id)}}">Delete</a>
+    <br>
+    <a href="{{url_for('newMenuItem', restaurant_id=restaurant_id)}}">New Menu Item</a>
     <br>
     <br>
 {%endfor%}

@@ -16,8 +16,10 @@ from flask import make_response
 import requests
 
 app = Flask(__name__)
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
-# Create an instance of this class with the name of running application as the argument
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
+# Create an instance of this class with the name of running application as
+# the argument
 engine = create_engine('sqlite:///restaurantmenuwithusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -29,7 +31,8 @@ session = DBSession()
 
 @app.route('/login/')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+        for x in xrange(32))
     login_session['state'] = state
     # Render the login template
     return render_template('login.html', STATE=state)
@@ -51,12 +54,14 @@ def gconnect():
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
-        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response = make_response(json.dumps(
+            'Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %
+           access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     print result
@@ -84,7 +89,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response = make_response(json.dumps(
+            'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -116,7 +122,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height:300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -133,8 +139,10 @@ def fbconnect():
     print "access token received %s" % access_token
 
     # Exchange client token for long-lived server-side token
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
+        'web']['app_id']
+    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())[
+        'web']['app_secret']
     url = ('https://graph.facebook.com/v2.8/oauth/access_token?'
            'grant_type=fb_exchange_token&client_id=%s&client_secret=%s'
            '&fb_exchange_token=%s') % (app_id, app_secret, access_token)
@@ -192,7 +200,8 @@ def fbconnect():
 def fbdisconnect():
     facebook_id = login_session['user_id']
     access_token = login_session.get('access_token')
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
+        facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     del login_session['username']
@@ -206,7 +215,8 @@ def fbdisconnect():
 
 
 def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
@@ -240,10 +250,12 @@ def gdisconnct():
     print login_session.get('username')
     if access_token is None:
         print 'Access Token is None.'
-        response = make_response(json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps(
+            'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
+        'access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print 'result is'
@@ -259,7 +271,8 @@ def gdisconnct():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps(
+            'Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -274,7 +287,8 @@ def restaurantJSON():
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
+    items = session.query(MenuItem).filter_by(
+        restaurant_id=restaurant_id).all()
     return jsonify(MenuItem=[i.serialize for i in items])
 
 
@@ -287,7 +301,7 @@ def menuItem(restaurant_id, menu_id):
 # Add Routes
 
 @app.route('/')
-@app.route('/restaurants/')
+# @app.route('/restaurants/')
 # Show all restaurants
 def showRestaurants():
     restaurants = session.query(Restaurant).all()
@@ -305,7 +319,8 @@ def newRestaurant():
         return redirect('/login')
 
     if request.method == 'POST':
-        newRestaurant = Restaurant(name=request.form['name'], user_id=login_session['user_id'])
+        newRestaurant = Restaurant(
+            name=request.form['name'], user_id=login_session['user_id'])
         session.add(newRestaurant)
         session.commit()
         flash("New restaurant is created!")
@@ -318,7 +333,8 @@ def newRestaurant():
 @app.route('/restaurants/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
 # Edit a restaurant
 def editRestaurant(restaurant_id):
-    editedRestaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    editedRestaurant = session.query(
+        Restaurant).filter_by(id=restaurant_id).one()
 
     if 'username' not in login_session:
         return redirect('/login')
@@ -340,7 +356,8 @@ def editRestaurant(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
 # Delete a restaurants
 def deleteRestaurant(restaurant_id):
-    restaurantToDelete = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    restaurantToDelete = session.query(
+        Restaurant).filter_by(id=restaurant_id).one()
 
     if 'username' not in login_session:
         return redirect('/login')
@@ -363,10 +380,12 @@ def deleteRestaurant(restaurant_id):
 # Show all menu items of a restaurant
 def showMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    menus = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
+    menus = session.query(MenuItem).filter_by(
+        restaurant_id=restaurant_id).all()
     creator = getUserInfo(restaurant.user_id)
 
-    # return render_template('menu.html', restaurant = restaurant, menus = menus, restaurant_id = restaurant_id)
+    # return render_template('menu.html', restaurant = restaurant, menus =
+    # menus, restaurant_id = restaurant_id)
 
     if 'username' not in login_session or creator.id != login_session['user_id']:
         return render_template('publicmenu.html', menus=menus, restaurant=restaurant, restaurant_id=restaurant_id, creator=creator)
@@ -387,14 +406,16 @@ def newMenuItem(restaurant_id):
         return "<script> function myFunction() {alert('You are not authorized to add a new menu. Please create your own restaurant in order to add menus.');}</script><body onload='myFunction()'>"
 
     if request.method == 'POST':
-        newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form['price'],  course=request.form['course'], restaurant_id=restaurant_id, user_id=restaurant.user_id)
+        newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form[
+                           'price'],  course=request.form['course'], restaurant_id=restaurant_id, user_id=restaurant.user_id)
         session.add(newItem)
         session.commit()
         flash("New menu item is created!")
         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
     else:
         return render_template('newMenuItem.html', restaurant_id=restaurant_id)
-    # return "This page is for making a new menu item for restaurant %s." %restaurant_id
+    # return "This page is for making a new menu item for restaurant %s."
+    # %restaurant_id
 
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])
